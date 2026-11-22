@@ -1,0 +1,1336 @@
+```html
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>破解羊群效應與股災理性投資｜50 題互動測驗</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans TC"', 'Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body {
+      font-family: "Noto Sans TC", "Inter", system-ui, sans-serif;
+    }
+    .option-card {
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+    }
+    .option-card:active {
+      transform: scale(0.99);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-amber-50/60 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-200">
+  <!-- 頂部導覽列 -->
+  <header class="sticky top-0 z-30 backdrop-blur bg-white/90 dark:bg-slate-900/90 border-b border-amber-200/80 dark:border-slate-800">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-amber-500 text-white font-bold text-base shadow-sm">羊</span>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white">
+            破解羊群效應與股災理性投資
+          </h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400">
+            50 題智慧變體測驗・支援隨時重新測驗與換問法
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button
+          id="btnThemeToggle"
+          type="button"
+          class="px-3 py-2 rounded-xl text-xs sm:text-sm font-medium bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition cursor-pointer"
+          aria-label="切換深淺色模式"
+        >
+          🌗 模式
+        </button>
+        <button
+          id="btnRetakeTop"
+          type="button"
+          class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-amber-600 hover:bg-amber-700 text-white shadow-sm transition cursor-pointer"
+        >
+          🔄 重新測驗（換問法）
+        </button>
+      </div>
+    </div>
+
+    <!-- 進度條 -->
+    <div class="w-full h-1.5 bg-amber-100 dark:bg-slate-800">
+      <div id="progressBar" class="h-full bg-amber-500 transition-all duration-300" style="width: 0%"></div>
+    </div>
+  </header>
+
+  <!-- 主內容區 -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
+    <!-- 狀態資訊卡 -->
+    <section class="rounded-2xl bg-white dark:bg-slate-900 border border-amber-200/80 dark:border-slate-800 p-4 sm:p-5 shadow-sm">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="space-y-1">
+          <div class="flex flex-wrap items-center gap-2">
+            <span id="roundBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300">
+              第 1 輪測驗
+            </span>
+            <span id="modeBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300">
+              問法模式：核心觀念與真實情境推演
+            </span>
+          </div>
+          <p id="modeDescription" class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            每次點擊「重新測驗」，都會切換不同問法模式並重新洗牌選項，避免死記答案位置。
+          </p>
+        </div>
+
+        <div class="flex items-center gap-4 sm:gap-6 shrink-0 bg-amber-50/80 dark:bg-slate-800/70 px-4 py-2.5 rounded-xl border border-amber-200/60 dark:border-slate-700">
+          <div class="text-center">
+            <div class="text-xs text-slate-500 dark:text-slate-400">已作答</div>
+            <div id="answeredCount" class="text-lg font-bold text-slate-900 dark:text-white">0 / 50</div>
+          </div>
+          <div class="h-8 w-px bg-amber-200 dark:bg-slate-700"></div>
+          <div class="text-center">
+            <div class="text-xs text-slate-500 dark:text-slate-400">目前答對</div>
+            <div id="correctCount" class="text-lg font-bold text-emerald-600 dark:text-emerald-400">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 問法切換與篩選列 -->
+      <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <label for="modeSelect" class="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
+            指定問法風格：
+          </label>
+          <select
+            id="modeSelect"
+            class="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs sm:text-sm px-3 py-2 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+          >
+            <option value="0">模式一：核心觀念與真實情境推演</option>
+            <option value="1">模式二：反向思考與錯誤行為診斷</option>
+            <option value="2">模式三：案例拆解、策略對比與心法應用</option>
+          </select>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            data-filter="all"
+            class="filter-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-slate-900 text-white dark:bg-amber-500 dark:text-slate-950 cursor-pointer"
+          >
+            全部題目
+          </button>
+          <button
+            type="button"
+            data-filter="unanswered"
+            class="filter-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 cursor-pointer"
+          >
+            未作答
+          </button>
+          <button
+            type="button"
+            data-filter="wrong"
+            class="filter-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 cursor-pointer"
+          >
+            答錯複習
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 成績結算卡（作答後或點擊查看成績時顯示） -->
+    <section id="summaryCard" class="hidden rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white p-5 sm:p-6 shadow-md">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <p class="text-xs sm:text-sm font-medium text-amber-100">本輪測驗進度與表現</p>
+          <h2 id="summaryTitle" class="text-xl sm:text-2xl font-bold mt-0.5">已完成測驗！</h2>
+          <p id="summaryMessage" class="text-sm text-amber-50 mt-1">
+            準備好換一種問法重新檢驗自己了嗎？
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2.5 shrink-0">
+          <button
+            id="btnRetakeSummary"
+            type="button"
+            class="px-4 py-2.5 rounded-xl bg-white text-amber-700 hover:bg-amber-50 font-bold text-sm shadow transition cursor-pointer"
+          >
+            🔄 重新作答並換新問法
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 題目列表容器 -->
+    <section id="quizContainer" class="space-y-4"></section>
+
+    <!-- 底部操作列 -->
+    <section class="rounded-2xl bg-white dark:bg-slate-900 border border-amber-200/80 dark:border-slate-800 p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+      <div class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 text-center sm:text-left">
+        完成作答後，隨時可點擊「重新測驗」清空紀錄並切換不同問法再挑戰一次。
+      </div>
+      <div class="flex flex-wrap items-center justify-center gap-2.5">
+        <button
+          id="btnShowSummary"
+          type="button"
+          class="px-4 py-2.5 rounded-xl text-sm font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 transition cursor-pointer"
+        >
+          📊 查看成績摘要
+        </button>
+        <button
+          id="btnRetakeBottom"
+          type="button"
+          class="px-4 py-2.5 rounded-xl text-sm font-semibold bg-amber-600 hover:bg-amber-700 text-white shadow transition cursor-pointer"
+        >
+          🔄 重新測驗（換不同問法）
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    /**
+     * 50 題知識庫：每題包含三個不同問法模式（0: 核心與情境推演, 1: 反向思考與錯誤診斷, 2: 案例拆解與策略對比）
+     * 並提供正確答案、干擾選項與詳細解析。
+     */
+    const QUESTION_BANK = [
+      {
+        id: 1,
+        topic: "羊群本能",
+        prompts: [
+          "在自然界中，羊群一旦發現有一隻羊突然奔跑，其他羊便會不假思索地跟著移動。這種行為在演化上之所以能提高生存機會，主要是因為哪一項機制？",
+          "【反向思考】如果草原上的羊群在逃生前，每隻都要先停下來查證「真的有野狼嗎？」，為什麼這種做法反而可能降低整體生存機會？",
+          "【策略對比】比較「立刻跟著奔跑的羊」與「停下來慢慢觀察的羊」，在面對突然逼近的掠食者時，群體跟隨策略最關鍵的優勢是什麼？"
+        ],
+        correct: "省去逐一查證危險的時間，爭取快速逃生。",
+        distractors: [
+          "因為領頭羊永遠不會判斷錯誤，跟著跑就能保證百分之百安全。",
+          "因為羊群奔跑時會發出聲波嚇跑所有掠食者。",
+          "因為羊群彼此之間會先透過語言開會投票再決定方向。"
+        ],
+        explanation: "在野外遇到危險時，速度與反應時間至關重要，不假思索跟隨能爭取寶貴的逃生時間。"
+      },
+      {
+        id: 2,
+        topic: "羊群本能",
+        prompts: [
+          "羊群「不假思索地跟隨群體」雖然有助於迅速應對危險，但在什麼情況下反而會把羊群帶入險境？",
+          "【錯誤診斷】當羊群連移動原因與目的地都不知道就一窩蜂往前衝時，最容易出現哪一種致命風險？",
+          "【情境推演】假設前方其實是懸崖或錯誤方向，但第一隻羊卻開始移動，群體盲目跟隨會導致什麼後果？"
+        ],
+        correct: "前方存在致命危險或領頭方向完全錯誤。",
+        distractors: [
+          "羊群會因為跑得太快而忘記吃草，導致體力不支。",
+          "羊群彼此之間會因為太有默契而失去群居本能。",
+          "領頭羊停下來休息時，後面的羊會全部迷路。"
+        ],
+        explanation: "盲目跟隨缺乏獨立判斷，一旦前方有危險或方向錯誤，整個群體都可能跟著陷入險境。"
+      },
+      {
+        id: 3,
+        topic: "羊群效應定義",
+        prompts: [
+          "根據投影片的定義，下列哪一項最精準地描繪了「羊群效應」的本質？",
+          "【觀念釐清】有人認為「只要大家一起做的事就一定是理性的」，但投影片對「羊群效應」的定義卻指出什麼關鍵特徵？",
+          "【情境辨識】當一個人心裡其實不確定該怎麼做，最後卻選擇跟隨多數人的行動時，這最符合哪一個概念？"
+        ],
+        correct: "行動不確定時跟隨多數人，即使明知不理性。",
+        distractors: [
+          "只有在經過完整財務試算與專家背書後，才跟隨多數人行動。",
+          "完全不理會市場上任何人的做法，只靠直覺反向操作。",
+          "僅出現在股票漲停板，與日常生活消費完全無關。"
+        ],
+        explanation: "羊群效應指的是人們在不確定如何行動時，會跟隨多數人的行為，即便知道這是不理性的。"
+      },
+      {
+        id: 4,
+        topic: "心理來源",
+        prompts: [
+          "下列哪一項因素「不是」投影片中提到促使人們產生羊群效應的心理來源？",
+          "【錯誤排除】投影片指出羊群效應常源於資訊匱乏、風險恐懼與社會認同渴望。請問下列何者不屬於這些衝動心理之一？",
+          "【觀念檢核】在討論人們為什麼容易盲目跟隨別人時，下列哪一項並非投影片所列的心理成因？"
+        ],
+        correct: "對企業財務報表的過度自信。",
+        distractors: [
+          "對資訊的匱乏。",
+          "對風險的恐懼。",
+          "對社會認同的渴望。"
+        ],
+        explanation: "羊群效應常見的心理來源包含對資訊的匱乏、對風險的恐懼與對社會認同的渴望，而非財報過度自信。"
+      },
+      {
+        id: 5,
+        topic: "百貨週年慶案例",
+        prompts: [
+          "在百貨公司週年慶的情境中，小華看到某櫃位排了長長人潮便立刻跟著排隊，心想這家店一定很厲害。這種行為最容易導致什麼結果？",
+          "【錯誤診斷】小華看到排隊就直覺認定店家超厲害並盲目跟從，這種消費羊群效應最常讓人忽略什麼？",
+          "【情境推演】若在週年慶只因為「大家都在排隊」就加入排隊行列，最後最可能發生什麼事？"
+        ],
+        correct: "忽略自身需求，買到不適合自己的商品。",
+        distractors: [
+          "一定能買到全場最便宜且完全符合自己需求的商品。",
+          "排隊時間會自動縮短，且店員會免費贈送熱門商品。",
+          "完全不會受到促銷氣氛或他人行為的影響。"
+        ],
+        explanation: "盲目跟著排隊容易忽略自己真正需要什麼，最後買到不適合或不需要的東西。"
+      },
+      {
+        id: 6,
+        topic: "百貨週年慶案例",
+        prompts: [
+          "同樣在百貨公司週年慶看到排隊人潮，小美卻心想：「應該是這間店剛好有活動吧？我還是看看有沒有更好的選擇。」小美的做法展現了什麼特質？",
+          "【策略對比】與「看到排隊就跟著排」相比，小美先推測是否有活動並尋求更好選擇，這屬於哪一種思維？",
+          "【情境判斷】面對人山人海的排隊櫃位，先思考背後原因並評估自身需求，這代表投資與消費上的什麼能力？"
+        ],
+        correct: "探究排隊原因，並評估是否符合自身需求。",
+        distractors: [
+          "完全排斥任何優惠活動，堅持只買原價商品。",
+          "把別人的排隊行為當作唯一且絕對的購買標準。",
+          "不看商品是否適合自己，只要人多就先搶再說。"
+        ],
+        explanation: "理性獨立思考會先追問排隊的真實原因，並檢視商品是否真正適合自己。"
+      },
+      {
+        id: 7,
+        topic: "FOMO 心態",
+        prompts: [
+          "在股市中，當股價連續狂漲、身邊的人都在搶著買進時，投資人因為害怕自己錯過賺錢機會而失去理智追高，這種心態稱為什麼？",
+          "【名詞辨識】股價大漲時，看到別人都在買、擔心自己沒跟上而急著衝進去追高，投影片稱這種心態為？",
+          "【情境診斷】阿明看到熱門股天天漲，心想「再不買就來不及了」於是失去理智買進，這背後主要是哪種心態作祟？"
+        ],
+        correct: "FOMO 心態。",
+        distractors: [
+          "價值投資心態。",
+          "定期定額紀律。",
+          "反向思考心態。"
+        ],
+        explanation: "FOMO（Fear of Missing Out，害怕錯過）常在股價狂漲時讓人失去理智、盲目追高。"
+      },
+      {
+        id: 8,
+        topic: "恐慌拋售",
+        prompts: [
+          "當股市出現崩盤、股價不斷下跌時，受羊群效應影響的投資人通常會因為哪種害怕而做出什麼行動？",
+          "【情境推演】股價一路下跌時，投資人因為擔心資產歸零或賠光，最常跟著市場做出什麼反應？",
+          "【心理拆解】在股市崩盤階段，羊群效應引發的恐懼主要讓人急著把股票換成什麼？"
+        ],
+        correct: "害怕自己賠光，趕快恐慌拋售換成現金。",
+        distractors: [
+          "害怕錯過低點，嚴格依照分批計畫慢慢建倉。",
+          "冷靜檢視財報後，逢低加碼基本面穩健的公司。",
+          "把所有現金轉成槓桿期貨，全力押注單日反彈。"
+        ],
+        explanation: "股災時投資人常因害怕賠光而恐慌拋售，急忙把股票賣掉換成現金。"
+      },
+      {
+        id: 9,
+        topic: "買高賣低循環",
+        prompts: [
+          "如果投資人太過遵從羊群效應，在股市狂漲時買進套牢、在股市大跌時卻把基本面沒問題的公司拋售，長期下來會怎樣？",
+          "【因果推論】狂漲時追高、崩盤時殺低，這種跟著市場情緒起舞的操作模式，最終會造成什麼結果？",
+          "【錯誤診斷】一位投資人總是在市場最熱時買進、最慌時賣出，長期下來最可能面臨什麼財務結果？"
+        ],
+        correct: "買在高點、賣在低點，長期下來就會賠錢。",
+        distractors: [
+          "買在最低點、賣在最高點，每年穩定翻倍。",
+          "完全不受市場波動影響，資產永遠不會縮水。",
+          "自動享有最高股息與最低交易成本。"
+        ],
+        explanation: "過度順應羊群效應容易變成「買在高點、賣在低點」，長期下來自然容易虧損。"
+      },
+      {
+        id: 10,
+        topic: "股災兩大錯誤",
+        prompts: [
+          "投影片指出，股災發生時大跌會強烈影響情緒，使羊群效應發揮作用，進而容易出現哪兩種錯誤？",
+          "【重點歸納】面對股災帶來的劇烈情緒衝擊，投資人最常掉入哪兩個陷阱？",
+          "【觀念盤點】在股災期間，受羊群效應影響的投資人最容易犯下哪兩類決策失誤？"
+        ],
+        correct: "恐慌賣出錯失長期報酬，與盲目抄底過早進場。",
+        distractors: [
+          "過度分散投資，與長期持有績優股。",
+          "設定停利點，與定期定額扣款。",
+          "研究基本面，與等待股價反彈。"
+        ],
+        explanation: "股災中最常見的兩種錯誤是「恐慌賣出，錯失長期報酬率」以及「盲目抄底，過早進場」。"
+      },
+      {
+        id: 11,
+        topic: "恐慌賣出代價",
+        prompts: [
+          "對於長期投資者而言，為什麼在股災中因為恐慌而賣出基本面獲利良好的公司，會造成嚴重的錯失？",
+          "【反向思考】如果一家公司獲利與基本面都沒問題，卻在股災時被投資人恐慌賣掉，最大的損失是什麼？",
+          "【情境判斷】股災常被視為長期投資者撿便宜的時機，此時把好公司賣掉會錯過什麼？"
+        ],
+        correct: "股災常是撿便宜時機，賣出會錯失未來反彈。",
+        distractors: [
+          "會立刻失去領取所有未來股息的法定資格。",
+          "會讓該公司的基本面立刻變成虧損狀態。",
+          "能避開未來所有可能的市場上漲行情。"
+        ],
+        explanation: "股災往往是長期投資者撿便宜的時機；基本面良好的公司若在恐慌中賣出，會錯失未來反彈與長期報酬。"
+      },
+      {
+        id: 12,
+        topic: "盲目抄底風險",
+        prompts: [
+          "在股災期間，如果聽到別人說「現在可以進場了」就跟著買進，為什麼往往會買在相對貴的位置？",
+          "【錯誤診斷】很多投資人在股災抄底時以為已經買在谷底，實際上卻常買在什麼位置？",
+          "【因果解析】股災通常會持續一段時間，這使得聽信他人進場的「抄底」容易發生什麼問題？"
+        ],
+        correct: "股災通常會持續一段時間，以為谷底其實在半山腰。",
+        distractors: [
+          "因為股災期間券商手續費會自動提高十倍。",
+          "因為股價只要跌過一次就再也不會繼續下跌。",
+          "因為抄底的人通常只買漲停板的股票。"
+        ],
+        explanation: "股災往往會延續一段時間，投資人主觀以為的谷底，其實可能只是下跌的半山腰。"
+      },
+      {
+        id: 13,
+        topic: "2008 年 0050 案例",
+        prompts: [
+          "以 2008 年金融危機中的 0050 ETF 為例，當時股價從 70 元跌至 30 元，若在股災賣出且未買回，到了 2025 年約 200 元時會怎樣？",
+          "【情境推演】假設有人在 2008 年金融危機把 0050 賣在 30 元且沒再買回，對照 2025 年約 200 元的價格，這代表什麼？",
+          "【案例分析】2008 年 0050 從 70 元跌至 30 元後，若因恐慌賣出且未買回，後續市場回溫時會面臨什麼情況？"
+        ],
+        correct: "錯失市場回溫後的長期大漲與翻倍報酬。",
+        distractors: [
+          "因為提早賣出，所以能領到 2025 年 200 元的價差。",
+          "0050 會一路跌到 0 元，因此賣出是唯一正確做法。",
+          "不會有任何影響，因為 2025 年股價仍停留在 30 元。"
+        ],
+        explanation: "2008 年金融危機時 0050 曾從 70 元跌至 30 元，若恐慌賣出且未買回，後續回升至 2025 年約 200 元的大漲就與自己無關了。"
+      },
+      {
+        id: 14,
+        topic: "2008 年 0050 案例",
+        prompts: [
+          "從 2008 年金融危機的 0050 案例來看，如果當時在股災有買入，或沒有因為恐慌賣出，一路放到 2025 年會有什麼結果？",
+          "【成果對比】對照 2008 年 30 元低點與 2025 年約 200 元的水準，當時在股災買入或堅持未恐慌賣出的投資人迎來了什麼？",
+          "【觀念印證】2008 年 0050 案例說明，克服恐慌並在股災持有或買入，長期到 2025 年能帶來什麼成果？"
+        ],
+        correct: "從 2008 年到 2025 年，股價翻了好幾倍。",
+        distractors: [
+          "股價會維持在 30 元完全不動。",
+          "會因為長期持有而導致本金全部歸零。",
+          "只能在 2008 年當天獲利了結，之後無法參與成長。"
+        ],
+        explanation: "從 2008 年金融危機到 2025 年，若沒有因恐慌賣出甚至在股災買入，0050 長期下來翻了好幾倍。"
+      },
+      {
+        id: 15,
+        topic: "2022 年特斯拉案例",
+        prompts: [
+          "在 2022 年科技股崩盤時，許多人以為 300 美元的特斯拉已經很低了而進場，結果發生了什麼事？",
+          "【案例還原】2022 年科技股崩盤期間，特斯拉股價跌到 300 美元時被許多人認為已跌夠，後來實際走勢如何？",
+          "【錯誤診斷】在 300 美元以為特斯拉已經到底而抄底的投資人，後來遇到了什麼狀況？"
+        ],
+        correct: "股價沒有到底，一路跌到 100 美元，買進者被套牢。",
+        distractors: [
+          "股價立刻反彈漲到 1,000 美元，抄底者大賺一筆。",
+          "股價從 300 美元穩穩橫盤一整年，完全沒有波動。",
+          "特斯拉宣布停止交易並退還所有股款。"
+        ],
+        explanation: "2022 年科技股崩盤時，特斯拉從 300 美元並未見底，而是持續下跌至 100 美元，讓急著抄底的人被套牢。"
+      },
+      {
+        id: 16,
+        topic: "避免盲目抄底策略",
+        prompts: [
+          "根據 2022 年特斯拉的案例，當遇到股災時，投影片建議用哪兩種方式來避免「盲目抄底」？",
+          "【方法盤點】為了不在股災中越抄越跌，投影片提出了哪兩種替代「一次盲目抄底」的做法？",
+          "【實務建議】股災來臨時，不想誤把半山腰當谷底，可以採取哪兩種進場方式？"
+        ],
+        correct: "等股價反彈再進場，或將資金分 5 等份慢慢進場。",
+        distractors: [
+          "把所有存款一次借貸押在單一檔跌最深的股票。",
+          "每天聽信社群群組的喊單，看到跌就立刻全壓。",
+          "完全禁止在任何時候買進任何股票或 ETF。"
+        ],
+        explanation: "避免盲目抄底可以選擇「等股價反彈再進場」，或是「將資金分成 5 等份慢慢進場」。"
+      },
+      {
+        id: 17,
+        topic: "等待反彈心態",
+        prompts: [
+          "在股災期間若選擇「等股價反彈再進場」，雖然可能不會買到最低點，但投影片認為這有什麼關係？",
+          "【觀念釐清】等股價反彈再進場往往買不到絕對最低點，投影片對此抱持什麼態度？",
+          "【策略心法】為什麼投影片說等股價反彈再進場「就算沒買到最低點也沒關係」？"
+        ],
+        correct: "沒關係，避免盲目猜底與買在半山腰更重要。",
+        distractors: [
+          "非常嚴重，代表這筆投資一定會虧損。",
+          "代表投資人缺乏紀律，應該立刻改為全押。",
+          "只有在股價漲停時才算符合規則。"
+        ],
+        explanation: "等股價反彈再進場雖然不會買到最低點，但也沒關係，重點是避免盲目猜底與買在半山腰。"
+      },
+      {
+        id: 18,
+        topic: "分批進場好處",
+        prompts: [
+          "將資金分成 5 等份、慢慢進場的主要好處是什麼？",
+          "【風險控管】把資金拆成 5 等份慢慢買入，為什麼能幫助投資人？",
+          "【效果解析】在股災中將資金分成 5 等份分批進場，最直接的作用是什麼？"
+        ],
+        correct: "避免一次買在半山腰，讓成本不致過高。",
+        distractors: [
+          "保證每一份都剛好買在歷史最低點。",
+          "讓交易手續費降為零並保證天天上漲。",
+          "省去檢視公司基本面的必要。"
+        ],
+        explanation: "將資金分成 5 等份慢慢進場，能避免一次買在下跌半山腰而導致整體成本過高。"
+      },
+      {
+        id: 19,
+        topic: "方法一：設定投資計劃",
+        prompts: [
+          "避免羊群效應的第一個方法是「設定你的投資計劃」。在這個方法中，下列哪一項做法最符合精神？",
+          "【原則檢核】設定長期投資計劃時，面對市場漲跌與基本面狀況，應該如何執行？",
+          "【情境判斷】投影片舉例「每月固定投資 1 萬元」，這體現了設定投資計劃的哪一項核心精神？"
+        ],
+        correct: "定好長期策略並遵守，基本面沒變就不輕易賣。",
+        distractors: [
+          "每天看盤漲跌隨時修改投資策略與目標。",
+          "只要看到股市下跌一天，就立刻把持股全部賣光。",
+          "不設定任何長期規則，完全看當下心情決定。"
+        ],
+        explanation: "設定投資計劃要先想好長期策略並嚴格遵守，不論漲跌，只要基本面沒變就不輕易賣出。"
+      },
+      {
+        id: 20,
+        topic: "方法二：噪音過濾器",
+        prompts: [
+          "在「設立市場噪音過濾器」的方法中，下列哪一種訊息屬於應該篩除的「噪音」？",
+          "【資訊辨識】設立市場噪音過濾器時，下列哪一項最屬於容易引發恐慌的市場噪音？",
+          "【情境舉例】投影片提到媒體會用聳動標題製造恐慌，下列何者即為此類噪音的例子？"
+        ],
+        correct: "媒體寫「崩盤了！股市還會再跌 50%！」的標題。",
+        distractors: [
+          "公司長期穩定的獲利能力與基本面營運狀況。",
+          "自己事先寫好的每月固定投資紀律。",
+          "對商品或公司內在品質的客觀檢視。"
+        ],
+        explanation: "媒體打出「崩盤了！股市還會再跌 50%！」這類引人恐慌的標題，屬於需要過濾的市場噪音。"
+      },
+      {
+        id: 21,
+        topic: "方法二：噪音過濾器",
+        prompts: [
+          "如果朋友對你說：「這支股票最近漲超多了快買進！我有小道消息，它之後還會再漲！」根據投影片，你應該怎麼做？",
+          "【情境應對】朋友炫耀有小道消息並催促你快買漲多的股票，開啟噪音過濾器後該怎麼處理？",
+          "【行為選擇】面對朋友報明牌、說股票漲很多還會再漲，最符合投影片建議的做法是什麼？"
+        ],
+        correct: "不因別人買而跟買，維持關注基本面的理性判斷。",
+        distractors: [
+          "立刻把所有資金借來跟進買進，深怕錯過小道消息。",
+          "不用看公司基本面，只要朋友有買就跟著買。",
+          "把所有持股賣掉，全部轉去追這支漲多的股票。"
+        ],
+        explanation: "不要因為別人買或聽信小道消息就跟風買進，應該持續關注基本面，不被市場情緒影響。"
+      },
+      {
+        id: 22,
+        topic: "內在品質比喻",
+        prompts: [
+          "投影片用「買東西不能只看外表，還要看一下內在的品質」來比喻什麼投資觀念？",
+          "【比喻解析】把買東西看「內在品質」對應到投資決策，投影片想強調的是什麼？",
+          "【觀念連結】為什麼投影片說買東西不能只看外表，還要看內在品質？"
+        ],
+        correct: "不能只看表面熱度或漲跌，要看公司基本面。",
+        distractors: [
+          "挑股票只要看哪一檔名字好聽、顏色漂亮就好。",
+          "買東西只看包裝是否華麗，不需要管實際品質。",
+          "股價漲得越快就代表內在品質越好，不用查證。"
+        ],
+        explanation: "就像買東西不能只看外表還要看內在品質，投資也要關注公司基本面，不被表象或情緒牽著走。"
+      },
+      {
+        id: 23,
+        topic: "方法三：恐慌應對機制",
+        prompts: [
+          "避免羊群效應的第三個方法是「設立市場恐慌的應對機制」。在市場大跌時，反向思考會問自己什麼問題？",
+          "【核心提問】市場大跌、大家恐慌賣出時，啟動反向思考會先問自己哪一句話？",
+          "【策略應用】設立市場恐慌應對機制時，面對劇烈下跌，反向思考的關鍵問題是什麼？"
+        ],
+        correct: "這真的是危機嗎？還是低點的買進機會？",
+        distractors: [
+          "大家都在賣了，我是不是應該用最快速度全部清倉？",
+          "這支股票昨天漲了多少，明天會不會繼續漲停？",
+          "朋友買了哪一支，我要不要跟著一起買？"
+        ],
+        explanation: "市場大跌時要反向思考，問自己：「這真的是危機嗎？還是低點的買進機會？」"
+      },
+      {
+        id: 24,
+        topic: "逛街折扣比喻",
+        prompts: [
+          "投影片用「逛街看到大家在搶購打折商品，先思考這些東西真的適合自己嗎」來說明什麼？",
+          "【生活類比】看到大家搶購打折商品卻先問自己是否適合，這是在示範哪一種面對市場波動的態度？",
+          "【情境啟示】逛街搶折扣時先評估自身是否需要，對應到投資上是要提醒我們什麼？"
+        ],
+        correct: "面對大跌或特價不盲目跟從，冷靜判斷是否真有危機。",
+        distractors: [
+          "只要看到打折或下跌，不管適不適合都全部買下來。",
+          "看到人潮搶購就代表折扣商品一定最划算，直接跟搶。",
+          "打折商品通常都有瑕疵，所以永遠不要走進特賣會。"
+        ],
+        explanation: "就像逛街看到搶購打折商品要先想是否適合自己，面對市場波動也要冷靜思考、不盲目跟從。"
+      },
+      {
+        id: 25,
+        topic: "方法四：機械式投資法",
+        prompts: [
+          "第四個避免羊群效應的方法是「使用機械式投資法」。投影片最推薦哪一種具體作法？",
+          "【方法辨識】為了讓情緒不影響決策，投影片推薦哪一種「機械式投資法」？",
+          "【策略名稱】在四大理性決策方法中，哪一種做法被歸類為「機械式投資法」？"
+        ],
+        correct: "定期定額投資法。",
+        distractors: [
+          "每天盯盤短線進出。",
+          "根據新聞頭條猜測隔天漲跌。",
+          "在股災時把資金一次全壓抄底。"
+        ],
+        explanation: "定期定額就是一種很棒的機械式投資法，能讓情緒不影響決策。"
+      },
+      {
+        id: 26,
+        topic: "定期定額運作與好處",
+        prompts: [
+          "關於「定期定額」的運作方式與好處，下列哪一項敘述是正確的？",
+          "【觀念檢核】每月從薪水撥出固定金額（如 5,000 元或 1 萬元）在固定時間買進標的，這帶來哪些好處？",
+          "【功能解析】定期定額不論股價高低都固定投入資金，最主要的優勢是什麼？"
+        ],
+        correct: "固定時間投入固定金額，分散風險且減少情緒干擾。",
+        distractors: [
+          "只在股價最高點才投入資金，確保買在熱門價位。",
+          "把所有資金一次投入單一檔股票，追求一夜致富。",
+          "會讓投資人隨著每日漲跌頻繁改變買賣決定。"
+        ],
+        explanation: "定期定額是在固定時間投入固定金額，能分散風險、避免一次投入所有資金，並減少情緒影響決策。"
+      },
+      {
+        id: 27,
+        topic: "章節總結",
+        prompts: [
+          "在投影片最後一章的總結中，作者提醒大家「不要當一隻被宰的羔羊」。要做到這一點，核心做法是什麼？",
+          "【總結心法】想要避免成為股市中被宰割的羔羊，投影片最後歸納出哪些關鍵行動？",
+          "【終極提醒】不再當盲目小羊、不被市場宰割，最需要建立哪一套做法？"
+        ],
+        correct: "建立理性計畫、關注基本面、依計畫並獨立思考。",
+        distractors: [
+          "緊盯群體動向，別人買什麼就跟著買什麼。",
+          "遇到市場任何波動就立刻改變計畫並清倉。",
+          "完全忽略公司基本面，只聽信市場傳聞。"
+        ],
+        explanation: "建立理性投資計劃、關注公司基本面、遵照計劃並學會獨立思考，才不會成為盲目小羊或被宰羔羊。"
+      },
+      {
+        id: 28,
+        topic: "情境診斷：盲目抄底",
+        prompts: [
+          "【情境診斷】阿明在股災來臨時，看到市場一片恐慌、股價連日下跌，他沒有賣出股票，但卻在當天把剩下的全部現金一次砸進某檔剛跌 20% 的股票想抄底，結果股價又跌了 30%。阿明犯了什麼錯？",
+          "阿明看到股票跌 20% 就認為已經夠便宜，並把剩餘現金一次全押抄底，結果卻買在半山腰。這屬於哪一種錯誤？",
+          "【案例剖析】股災下跌過程中，把剛跌 20% 當作底部並一次投入資金，導致後續續跌被套牢，這是什麼問題？"
+        ],
+        correct: "把跌 20% 誤當谷底且一次全押，陷入盲目抄底。",
+        distractors: [
+          "執行了定期定額機械式投資法，分散了風險。",
+          "設立了市場噪音過濾器，完全不受情緒影響。",
+          "等待股價確認反彈後才進場，因此避開了下跌。"
+        ],
+        explanation: "股災往往持續一段時間，以為跌夠了就一次進場抄底，容易買在下跌半山腰而套牢。"
+      },
+      {
+        id: 29,
+        topic: "行為辨識：噪音過濾器",
+        prompts: [
+          "【行為辨識】下列哪一種投資行為，最能展現「設立市場噪音過濾器」的實際運用？",
+          "當市場充斥聳動崩盤新聞與朋友小道消息時，下列哪一種做法代表你成功過濾了噪音？",
+          "【情境選擇】下列哪一項行動最符合投影片所說的「只關注有用的價值」？"
+        ],
+        correct: "無視崩盤頭條與朋友報明牌，只看公司基本面。",
+        distractors: [
+          "看到新聞寫「還會再跌 50%」就立刻恐慌賣出所有持股。",
+          "聽朋友說有小道消息，不查基本面就立刻追高買進。",
+          "每天收集最多的小道消息與情緒評論作為唯一依據。"
+        ],
+        explanation: "設立市場噪音過濾器就是要篩除誇大新聞與小道消息等無用資訊，專注於基本面等有用價值。"
+      },
+      {
+        id: 30,
+        topic: "案例對比：0050 vs 特斯拉",
+        prompts: [
+          "【案例對比】比較 2008 年 0050 案例與 2022 年特斯拉案例，兩者分別最鮮明地提醒投資人注意哪兩個面向？",
+          "投影片先舉 2008 年 0050 的例子，再舉 2022 年特斯拉的例子，這兩個案例分別凸顯了什麼教訓？",
+          "【深度比較】2008 年 0050 與 2022 年特斯拉案例放在一起看，各自最核心的警示是什麼？"
+        ],
+        correct: "前者提醒別因恐慌錯失反彈，後者提醒別盲目抄底。",
+        distractors: [
+          "兩者都是在說明股票只要漲停就一定要立刻賣出。",
+          "前者提醒不要定期定額，後者提醒不要看基本面。",
+          "兩者都證明股災時應該把所有股票一次賣光換現金。"
+        ],
+        explanation: "2008 年 0050 案例凸顯恐慌賣出可能錯失長期大漲；2022 年特斯拉案例則提醒股災中不要盲目抄底。"
+      },
+      {
+        id: 31,
+        topic: "心理機制：情緒與羊群",
+        prompts: [
+          "【心理機制】為什麼人在股市狂漲時容易「失去理智、盲目追高」，在股災時又容易「害怕賠光、趕快賣掉」？",
+          "當股市出現劇烈情緒波動時，為什麼多數人會放棄獨立思考而跟著群體行動？",
+          "【因果推論】股市大漲與大跌時，情緒波動如何影響投資人的決策？"
+        ],
+        correct: "市場情緒波動觸發羊群效應，蓋過了獨立思考。",
+        distractors: [
+          "因為投資人完全沒有任何情緒，純粹依照數學公式交易。",
+          "因為群體行動總是比獨立思考更精準預測未來價格。",
+          "因為股市漲跌與投資人的心理狀態毫無關聯。"
+        ],
+        explanation: "當股市情緒波動時，羊群效應會發揮作用，讓人失去理智或害怕賠光，進而蓋過獨立思考。"
+      },
+      {
+        id: 32,
+        topic: "策略組合：計劃與定期定額",
+        prompts: [
+          "【策略選擇】小芬每個月領薪水後，都會固定撥出 5,000 元買進她看好的投資標的，不管當月市場是漲是跌都照常執行。這最符合哪兩種方法的結合？",
+          "固定每月從薪水撥出 5,000 元買進標的，且不論股價高低都持續執行，這體現了哪兩項理性策略？",
+          "【情境辨識】小芬不管市場漲跌都每月固定投入 5,000 元，這同時運用了投影片中的哪些方法？"
+        ],
+        correct: "設定投資計劃與使用定期定額機械式投資法。",
+        distractors: [
+          "盲目抄底與聽信小道消息追高。",
+          "恐慌拋售與追逐媒體崩盤標題。",
+          "只在百貨週年慶排隊與搶購打折品。"
+        ],
+        explanation: "設定長期投資計劃並搭配每月固定金額的定期定額，能讓紀律取代情緒波動。"
+      },
+      {
+        id: 33,
+        topic: "基本面與持有理由",
+        prompts: [
+          "【觀念判斷】當某家公司因為整體股災而股價重挫，但經過評估發現它的基本面獲利依然良好，此時若投資人選擇不恐慌賣出，最關鍵的理由是什麼？",
+          "為什麼投影片強調「只要你的投資標的的基本面沒變，就不會輕易地賣掉」？",
+          "【情境分析】公司基本面獲利良好卻遇到股災大跌，不急著賣出的核心依據是什麼？"
+        ],
+        correct: "基本面良好代表體質未壞，賣出恐錯失未來反彈。",
+        distractors: [
+          "因為股價下跌代表這家公司已經沒有任何賺錢能力。",
+          "因為賣出股票需要繳交高額罰金。",
+          "因為基本面良好的股票永遠不會下跌。"
+        ],
+        explanation: "基本面獲利良好代表公司本質仍具價值，在恐慌中賣出容易錯失未來反彈與長期報酬。"
+      },
+      {
+        id: 34,
+        topic: "情境推演：排隊與折扣",
+        prompts: [
+          "【情境推演】假設你正在逛街，看到一家店門口大排長龍，旁邊還有不少人喊著「快搶啊，打折了！」按照投影片的理性思維，你下一步最適合怎麼做？",
+          "看到店家排隊人潮且有人喊打折搶購時，投影片教導的理性第一步是什麼？",
+          "【生活應用】面对人群排隊與搶購打折商品的情境，冷靜的投資人會先做什麼判斷？"
+        ],
+        correct: "先想排隊原因與自身需求，再決定要不要買。",
+        distractors: [
+          "立刻衝進去跟著搶購，深怕晚一步就沒貨了。",
+          "認定只要有打折就一定划算，全部買回家再說。",
+          "因為人多就覺得一定有問題，永遠不走近任何商店。"
+        ],
+        explanation: "無論是週年慶排隊還是搶購打折商品，都應先思考原因與自身是否真的需要，再做決定。"
+      },
+      {
+        id: 35,
+        topic: "錯誤排除：盲目抄底",
+        prompts: [
+          "【錯誤排除】下列哪一項敘述「不符合」投影片對「盲目抄底」的描述與建議？",
+          "關於避免盲目抄底的做法，下列哪一項說法是錯誤的？",
+          "【觀念挑錯】下列哪一個選項與投影片對「抄底」的提醒背道而馳？"
+        ],
+        correct: "只要看到股價跌了一段，就認定一定是最低點。",
+        distractors: [
+          "股災通常會持續一段時間，以為的谷底可能是半山腰。",
+          "可以等股價反彈再進場，即使不是最低點也沒關係。",
+          "可以將資金分成 5 等份慢慢進場，避免成本過高。"
+        ],
+        explanation: "股災中不能主觀以為跌了一段就是最低點，應該避免盲目抄底，改採等反彈或分 5 等份慢慢進場。"
+      },
+      {
+        id: 36,
+        topic: "核心概念：天生羊群陷阱",
+        prompts: [
+          "【核心概念】投影片提到「我們的大腦其實天生就很容易掉入羊群的陷阱」。這句話背後想傳達什麼意涵？",
+          "為什麼作者說人類的大腦天生容易掉入羊群陷阱，因此需要學習如何避免？",
+          "【觀念理解】「大腦天生容易掉入羊群陷阱」這句話，對我們做投資決策有什麼啟示？"
+        ],
+        correct: "從眾本能深植人性，需要刻意建立理性機制克服。",
+        distractors: [
+          "人類大腦天生就能自動算出股票最低點，不需要計畫。",
+          "跟隨群體是人類唯一的思考方式，無法改變。",
+          "只要不去逛百貨公司，大腦就不會有羊群效應。"
+        ],
+        explanation: "跟隨群體是演化留下的本能，大腦容易受情緒與群眾影響，因此需要刻意建立計劃與過濾機制來保持理性。"
+      },
+      {
+        id: 37,
+        topic: "情境判斷：噪音過濾",
+        prompts: [
+          "【情境判斷】某檔股票近期新聞不斷渲染恐慌情緒，同時身邊朋友也都在討論市場崩盤。若你決定先冷靜檢視該公司基本面是否改變，這屬於哪一種做法？",
+          "不理會媒體恐慌標題與親友討論，轉而檢視公司基本面，這最貼近哪一項原則？",
+          "【方法歸類】把注意力從恐慌新聞與市場雜訊轉向基本面，這是在運用哪一種防禦策略？"
+        ],
+        correct: "設立市場噪音過濾器，專注有用價值與基本面。",
+        distractors: [
+          "盲目跟隨羊群恐慌拋售。",
+          "陷入 FOMO 心態盲目追高。",
+          "把所有資金一次抄底買進。"
+        ],
+        explanation: "設立市場噪音過濾器能篩除無用的恐慌雜訊，讓我們專注在基本面等有用的價值上。"
+      },
+      {
+        id: 38,
+        topic: "對比分析：股市與消費",
+        prompts: [
+          "【對比分析】「在股市狂漲時搶著買進」與「在百貨週年慶看到排隊就跟著排」，這兩種行為在投影片中共同反映了什麼？",
+          "把「股市狂漲搶買」和「週年慶看到排隊就排」放在一起看，兩者共同的行為特徵是什麼？",
+          "【跨情境連結】股市追高搶買與百貨排隊跟風，在投影片中都用來說明哪一種現象？"
+        ],
+        correct: "看到群體行動就直覺跟從，缺乏獨立思考。",
+        distractors: [
+          "都經過嚴謹的基本面分析與長期規劃。",
+          "都能保證買到最低價格並獲得最大報酬。",
+          "都代表完全不受社會認同或情緒影響。"
+        ],
+        explanation: "無論在股市搶買還是百貨排隊，看到別人行動就直覺跟從、缺乏獨立思考，都是羊群效應的表現。"
+      },
+      {
+        id: 39,
+        topic: "進場紀律：分批與反彈",
+        prompts: [
+          "【進場紀律】當市場出現大幅下跌時，下列哪一種做法最能降低「一次買在下跌半山腰」的風險？",
+          "為了避免在下跌過程中一次買在半山腰，投影片建議哪一種進場方式？",
+          "【風險控管】市場大跌時，想避免把資金一次卡在半山腰，最適合採取什麼策略？"
+        ],
+        correct: "分 5 等份慢慢進場，或等股價反彈再進場。",
+        distractors: [
+          "聽到別人說跌夠了，立刻把全部資金一次買完。",
+          "只看股價跌幅數字，跌越多就一次借錢押越多。",
+          "在沒有任何計畫的情況下憑感覺重壓。"
+        ],
+        explanation: "將資金分成 5 等份慢慢進場，或等股價反彈再進場，都能有效降低一次買在半山腰的風險。"
+      },
+      {
+        id: 40,
+        topic: "觀念釐清：賣出條件",
+        prompts: [
+          "【觀念釐清】關於「設定投資計劃」中的賣出原則，投影片提到「只要你的投資標的的基本面沒變，就不會輕易地賣掉」。這代表什麼？",
+          "在「設定投資計劃」的例子中，為什麼基本面沒變就不輕易賣掉？",
+          "【原則理解】「只要投資標的的基本面沒變，就不會輕易賣掉」這句話的核心重點是什麼？"
+        ],
+        correct: "短期股價漲跌不是輕易賣出的理由，基本面才是關鍵。",
+        distractors: [
+          "只要股價出現任何下跌，就應該立刻全部賣出。",
+          "投資標的永遠不需要檢視基本面，只需看心情賣出。",
+          "每個月固定投資 1 萬元後，隔月就要全部賣掉。"
+        ],
+        explanation: "短期市場漲跌會干擾情緒，但只要投資標的的基本面沒有改變，就不應因為短期波動而輕易賣出。"
+      },
+      {
+        id: 41,
+        topic: "情緒控管：股災恐慌",
+        prompts: [
+          "【情緒控管】在股災期間，為什麼投資人常常明知「股災可能是撿便宜的時機」，卻還是忍不住把股票賣掉？",
+          "股災大跌時，為什麼理性的道理往往敵不過當下的情緒壓力？",
+          "【行為解析】在股災中明明知道可能是低點機會，卻仍跟著賣出，主要是受到什麼影響？"
+        ],
+        correct: "恐慌壓力影響情緒，讓人失去判斷力而跟風。",
+        distractors: [
+          "因為股災期間每個人都必須強制賣出股票。",
+          "因為賣出股票能讓股價立刻停止下跌。",
+          "因為投資人完全沒有看到股價下跌。"
+        ],
+        explanation: "股災大跌時，情緒會受到強烈影響，恐慌壓力讓人失去判斷力，進而跟著群體賣出。"
+      },
+      {
+        id: 42,
+        topic: "實務應用：定期定額與反向思考",
+        prompts: [
+          "【實務應用】小陳每月薪水入帳後，設定自動扣款 5,000 元買進投資標的，且在市場大跌時反問自己這是危機還是低點買進機會。這體現了哪幾種思維？",
+          "每月固定扣款 5,000 元並在大跌時反問是危機還是買進機會，小陳運用了哪些觀念？",
+          "【情境分析】結合固定扣款與大跌時反向思考，小陳的做法展現了哪些理性特質？"
+        ],
+        correct: "機械式定期定額，以及恐慌時的反向思考。",
+        distractors: [
+          "FOMO 追高心態與盲目抄底。",
+          "聽信小道消息與恐慌拋售。",
+          "忽略基本面與隨波逐流。"
+        ],
+        explanation: "小陳同時運用了「機械式投資法（定期定額）」與「設立市場恐慌的應對機制（反向思考）」。"
+      },
+      {
+        id: 43,
+        topic: "邏輯推論：跟風後果",
+        prompts: [
+          "【邏輯推論】如果一位投資人「只看市場上誰買得多就買誰，看到大跌就跟著大家一起賣」，他最可能面臨什麼後果？",
+          "跟著群眾買熱門股、跟著群眾在大跌時賣出，長期下來最容易發生什麼事？",
+          "【結果預測】完全依賴群眾買賣訊號來操作股票，最終最可能出現哪種結果？"
+        ],
+        correct: "陷入買高賣低的羊群陷阱，長期容易賠錢。",
+        distractors: [
+          "每次都能精準買在起漲點並賣在最高點。",
+          "完全避開所有市場下跌與虧損。",
+          "自動成為市場上最理性的長期贏家。"
+        ],
+        explanation: "跟著大家搶買容易買在高點，跟著大家恐慌賣出容易賣在低點，長期下來就會賠錢。"
+      },
+      {
+        id: 44,
+        topic: "概念區分：計劃與機械式投資",
+        prompts: [
+          "【概念區分】在投影片的四大方法中，「設定你的投資計劃」與「使用機械式投資法（定期定額）」有什麼共同之處？",
+          "「設定投資計劃」與「定期定額」都能幫助避免羊群效應，兩者共同發揮了什麼作用？",
+          "【策略連結】為什麼「設定投資計劃」和「定期定額」都能讓決策更理性？"
+        ],
+        correct: "都透過事先定下的規則與紀律，減少情緒干擾。",
+        distractors: [
+          "都要求投資人每天根據新聞頭條頻繁買賣。",
+          "都鼓勵在市場最恐慌時把所有資金一次全押。",
+          "都不需要考慮長期策略與風險分散。"
+        ],
+        explanation: "兩者都透過事先建立的規則與紀律來執行，避免投資人被當下的漲跌情緒左右。"
+      },
+      {
+        id: 45,
+        topic: "案例反思：0050 長期回升",
+        prompts: [
+          "【案例反思】回顧 2008 年 0050 ETF 從 70 元跌到 30 元、後來到 2025 年約 200 元的例子，這對「恐慌賣出」提出了什麼警告？",
+          "從 2008 年 0050 跌到 30 元到 2025 年約 200 元的走勢來看，恐慌賣出最大的風險是什麼？",
+          "【歷史啟示】2008 年 0050 案例提醒我們，在金融危機恐慌賣出可能錯過什麼？"
+        ],
+        correct: "恐慌賣出可能錯過後續大漲，讓自己留下遺憾。",
+        distractors: [
+          "恐慌賣出能確保在 2025 年買到更低的價格。",
+          "金融危機時賣出股票永遠不會錯過未來的上漲。",
+          "0050 在 2008 年跌到 30 元後就再也沒有回升過。"
+        ],
+        explanation: "2008 年 0050 曾跌至 30 元，但後來回溫並走到 2025 年約 200 元，恐慌賣出會錯失後續大漲機會。"
+      },
+      {
+        id: 46,
+        topic: "案例反思：特斯拉續跌",
+        prompts: [
+          "【案例反思】回顧 2022 年特斯拉從 300 美元跌到 100 美元的例子，這對「以為跌夠了就抄底」提出了什麼提醒？",
+          "2022 年特斯拉從 300 美元一路跌至 100 美元，這說明在股災中猜測底部有什麼危險？",
+          "【教訓總結】看到股價跌到 300 美元就以為已經跌夠、進場抄底，卻跌到 100 美元，這提醒我們什麼？"
+        ],
+        correct: "跌深不代表已見底，急著抄底可能越抄越跌。",
+        distractors: [
+          "只要股價跌破 300 美元就一定是絕對底部，可以全押。",
+          "股災中的股票跌到 100 美元就一定會立刻反彈翻倍。",
+          "抄底時只要聽別人說可以進場就一定安全。"
+        ],
+        explanation: "跌了一段不代表已經到底，2022 年特斯拉從 300 美元續跌至 100 美元，顯示盲目抄底容易越抄越跌。"
+      },
+      {
+        id: 47,
+        topic: "綜合應用：股災雙重防護",
+        prompts: [
+          "【綜合應用】如果市場正在大跌，你手上持有基本面依然穩健的標的，同時也想避免「恐慌賣出」與「盲目抄底」，下列哪種做法最完整？",
+          "面對股災大跌，既不想恐慌賣掉基本面好的持股，又不想盲目抄底買在半山腰，最適合怎麼做？",
+          "【策略整合】在股災中同時防範「恐慌賣出」與「盲目抄底」，下列哪一項做法最周全？"
+        ],
+        correct: "守住基本面不亂賣，並採分批或等反彈再進場。",
+        distractors: [
+          "先恐慌賣出全部持股，再把現金一次全押猜底。",
+          "聽信小道消息追高，同時忽略基本面與計畫。",
+          "每天看盤情緒化進出，不設任何進場或持有規則。"
+        ],
+        explanation: "基本面穩健就不因恐慌亂賣，若要進場則採分批或等反彈，才能同時避開兩大股災錯誤。"
+      },
+      {
+        id: 48,
+        topic: "觀念檢核：買高賣低成因",
+        prompts: [
+          "【觀念檢核】下列哪一項做法「最容易」讓人在股市中變成「買在高點、賣在低點」？",
+          "哪一種行為最會把投資人推向「狂漲買進套牢、大跌恐慌拋售」的困境？",
+          "【行為診斷】下列哪一項操作最容易造成長期下來「買在高點、賣在低點」而賠錢？"
+        ],
+        correct: "狂漲時受 FOMO 驅使追高，大跌時因害怕賠光賣出。",
+        distractors: [
+          "設立市場噪音過濾器，專注檢視公司基本面。",
+          "每個月固定投入資金並遵守長期投資計劃。",
+          "在股災時冷靜反向思考，不盲目跟隨群體。"
+        ],
+        explanation: "狂漲時因 FOMO 盲目追高、崩盤時因害怕賠光恐慌拋售，正是造成買高賣低與虧損的主因。"
+      },
+      {
+        id: 49,
+        topic: "心法總結：獨立思考",
+        prompts: [
+          "【心法總結】投影片最後提醒大家「學會獨立思考，不要當盲目的小羊」。在面對市場波動時，「獨立思考」最核心的表現是什麼？",
+          "不當盲目的小羊、學會獨立思考，在投資上代表我們應該如何做決定？",
+          "【核心能力】面對股市漲跌與眾人喧嘩時，「獨立思考」最關鍵的做法是什麼？"
+        ],
+        correct: "不盲從群體與雜訊，依基本面與計畫做判斷。",
+        distractors: [
+          "完全不聽任何人的意見，也完全不看基本面與計畫。",
+          "只要群眾往哪裡跑，就跟著往哪裡跑才最安全。",
+          "只在股價大漲時才開始思考要不要買進。"
+        ],
+        explanation: "獨立思考是指不被群體情緒與市場噪音牽著走，而是依據基本面與自己的投資計劃做出理性判斷。"
+      },
+      {
+        id: 50,
+        topic: "全篇統整：理性投資目標",
+        prompts: [
+          "【全篇統整】整份投影片從羊群本能、百貨週年慶、股市 FOMO 與恐慌拋售，一路講到 0050 與特斯拉案例及四大對策，最想幫助投資人達成什麼目標？",
+          "串聯整份投影片的所有內容，最核心的學習目標是什麼？",
+          "【課程總覽】從認識羊群效應到建立四大防禦方法，這份內容最希望幫助我們做到什麼？"
+        ],
+        correct: "克服羊群效應與情緒干擾，做出理性穩健決策。",
+        distractors: [
+          "學會如何在股市中預測每一次的最高點與最低點。",
+          "在股災發生時最快速度跟隨群眾賣出所有資產。",
+          "把投資當作逛街搶購，看到熱門就立刻跟進。"
+        ],
+        explanation: "整份內容旨在幫助我們看清羊群效應與情緒陷阱，並透過計劃、過濾噪音、反向思考與定期定額做出理性決策。"
+      }
+    ];
+
+    const MODE_INFO = [
+      {
+        label: "模式一：核心觀念與真實情境推演",
+        desc: "以投影片核心觀念與生活、股市情境為主，檢驗對基本概念與案例的理解。"
+      },
+      {
+        label: "模式二：反向思考與錯誤行為診斷",
+        desc: "改以反向提問、診斷錯誤操作與排除盲點的角度出題，測試觀念是否真的內化。"
+      },
+      {
+        label: "模式三：案例拆解、策略對比與心法應用",
+        desc: "著重於策略比較、案例啟示與實務應用情境，訓練在市場波動時做出獨立判斷。"
+      }
+    ];
+
+    // 應用程式狀態
+    const state = {
+      round: 1,
+      modeIndex: 0,
+      filter: "all",
+      answers: {}, // { questionId: selectedOptionText }
+      shuffledOptions: {} // { questionId: [opt1, opt2, opt3, opt4] }
+    };
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function prepareOptionsForRound() {
+      state.shuffledOptions = {};
+      QUESTION_BANK.forEach((q) => {
+        const allOpts = [q.correct, ...q.distractors];
+        state.shuffledOptions[q.id] = shuffleArray(allOpts);
+      });
+    }
+
+    function retakeQuiz(nextModeIndex = null) {
+      state.round += 1;
+      state.answers = {};
+      state.filter = "all";
+      if (nextModeIndex !== null) {
+        state.modeIndex = nextModeIndex;
+      } else {
+        state.modeIndex = (state.modeIndex + 1) % MODE_INFO.length;
+      }
+      document.getElementById("modeSelect").value = String(state.modeIndex);
+      document.getElementById("summaryCard").classList.add("hidden");
+      prepareOptionsForRound();
+      updateFilterButtonsUI();
+      renderAll();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function selectAnswer(questionId, optionText) {
+      // 允許重新選擇答案
+      state.answers[questionId] = optionText;
+      renderSingleQuestion(questionId);
+      updateStats();
+    }
+
+    function getStats() {
+      const total = QUESTION_BANK.length;
+      let answered = 0;
+      let correct = 0;
+      QUESTION_BANK.forEach((q) => {
+        const chosen = state.answers[q.id];
+        if (chosen !== undefined) {
+          answered += 1;
+          if (chosen === q.correct) {
+            correct += 1;
+          }
+        }
+      });
+      return { total, answered, correct };
+    }
+
+    function updateStats() {
+      const { total, answered, correct } = getStats();
+      document.getElementById("roundBadge").textContent = `第 ${state.round} 輪測驗`;
+      document.getElementById("modeBadge").textContent = `問法模式：${MODE_INFO[state.modeIndex].label}`;
+      document.getElementById("modeDescription").textContent = MODE_INFO[state.modeIndex].desc;
+      document.getElementById("answeredCount").textContent = `${answered} / ${total}`;
+      document.getElementById("correctCount").textContent = String(correct);
+
+      const pct = Math.round((answered / total) * 100);
+      document.getElementById("progressBar").style.width = `${pct}%`;
+
+      if (answered === total) {
+        showSummary(true);
+      }
+    }
+
+    function showSummary(autoTriggered = false) {
+      const { total, answered, correct } = getStats();
+      const rate = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+      const summaryCard = document.getElementById("summaryCard");
+      const titleEl = document.getElementById("summaryTitle");
+      const msgEl = document.getElementById("summaryMessage");
+
+      if (answered === total) {
+        titleEl.textContent = `第 ${state.round} 輪完成！答對 ${correct} / ${total} 題（正確率 ${rate}%）`;
+        msgEl.textContent =
+          rate >= 90
+            ? "表現非常出色！你已經把防範羊群效應與股災理性決策的觀念掌握得相當扎實，歡迎點選重新測驗換新問法再挑戰！"
+            : "很棒的練習！你可以檢視答錯題目的解析，或直接點擊「重新作答並換新問法」再測驗一次。";
+      } else {
+        titleEl.textContent = `目前進度：已作答 ${answered} / ${total} 題，答對 ${correct} 題（已答正確率 ${rate}%）`;
+        msgEl.textContent = autoTriggered
+          ? "繼續完成剩餘題目吧！"
+          : "隨時可以繼續作答，或點擊右側按鈕清空紀錄並切換不同問法重新開始。";
+      }
+
+      summaryCard.classList.remove("hidden");
+      if (!autoTriggered) {
+        summaryCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
+
+    function buildQuestionCard(q, index) {
+      const promptText = q.prompts[state.modeIndex] || q.prompts[0];
+      const userAnswer = state.answers[q.id];
+      const hasAnswered = userAnswer !== undefined;
+      const isCorrect = hasAnswered && userAnswer === q.correct;
+      const options = state.shuffledOptions[q.id] || [q.correct, ...q.distractors];
+
+      const card = document.createElement("article");
+      card.id = `q-card-${q.id}`;
+      card.className =
+        "rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-4 sm:p-6 shadow-sm space-y-4";
+
+      // 題目頂部標籤
+      const header = document.createElement("div");
+      header.className = "flex flex-wrap items-center justify-between gap-2";
+
+      const leftMeta = document.createElement("div");
+      leftMeta.className = "flex items-center gap-2";
+
+      const numBadge = document.createElement("span");
+      numBadge.className =
+        "inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-100 text-amber-900 dark:bg-amber-900/50 dark:text-amber-200";
+      numBadge.textContent = `第 ${index + 1} 題`;
+
+      const topicBadge = document.createElement("span");
+      topicBadge.className =
+        "inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300";
+      topicBadge.textContent = q.topic;
+
+      leftMeta.appendChild(numBadge);
+      leftMeta.appendChild(topicBadge);
+
+      const statusBadge = document.createElement("span");
+      if (!hasAnswered) {
+        statusBadge.className = "text-xs font-medium text-slate-400 dark:text-slate-500";
+        statusBadge.textContent = "尚未作答";
+      } else if (isCorrect) {
+        statusBadge.className =
+          "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300";
+        statusBadge.textContent = "✓ 答對了";
+      } else {
+        statusBadge.className =
+          "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 dark:bg-rose-900/50 dark:text-rose-300";
+        statusBadge.textContent = "✕ 再想想";
+      }
+
+      header.appendChild(leftMeta);
+      header.appendChild(statusBadge);
+
+      // 題幹文字
+      const questionTitle = document.createElement("h3");
+      questionTitle.className = "text-base sm:text-lg font-bold leading-relaxed text-slate-900 dark:text-white";
+      questionTitle.textContent = promptText;
+
+      // 選項列表
+      const optionsBox = document.createElement("div");
+      optionsBox.className = "grid grid-cols-1 gap-2.5";
+
+      const labels = ["A", "B", "C", "D"];
+      options.forEach((optText, optIdx) => {
+        const isSelected = userAnswer === optText;
+        const isThisCorrect = optText === q.correct;
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className =
+          "option-card w-full text-left p-3.5 sm:p-4 rounded-xl border flex items-start gap-3 cursor-pointer ";
+
+        if (!hasAnswered) {
+          btn.className +=
+            "border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-800/50 hover:border-amber-400 hover:bg-amber-50/70 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100";
+        } else if (isThisCorrect) {
+          btn.className +=
+            "border-emerald-500 bg-emerald-50/90 dark:bg-emerald-950/50 text-emerald-950 dark:text-emerald-100 ring-1 ring-emerald-500";
+        } else if (isSelected && !isThisCorrect) {
+          btn.className +=
+            "border-rose-500 bg-rose-50/90 dark:bg-rose-950/50 text-rose-950 dark:text-rose-100 ring-1 ring-rose-500";
+        } else {
+          btn.className +=
+            "border-slate-200/70 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 opacity-75";
+        }
+
+        const keyBadge = document.createElement("span");
+        keyBadge.className =
+          "inline-flex items-center justify-center w-6 h-6 rounded-lg text-xs font-bold shrink-0 mt-0.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200";
+        keyBadge.textContent = labels[optIdx] || String(optIdx + 1);
+
+        const textSpan = document.createElement("span");
+        textSpan.className = "text-sm sm:text-base leading-snug font-medium";
+        textSpan.textContent = optText;
+
+        btn.appendChild(keyBadge);
+        btn.appendChild(textSpan);
+
+        btn.addEventListener("click", () => {
+          selectAnswer(q.id, optText);
+        });
+
+        optionsBox.appendChild(btn);
+      });
+
+      card.appendChild(header);
+      card.appendChild(questionTitle);
+      card.appendChild(optionsBox);
+
+      // 作答後顯示解析
+      if (hasAnswered) {
+        const expBox = document.createElement("div");
+        expBox.className =
+          "rounded-xl bg-amber-50/90 dark:bg-slate-800/80 border border-amber-200/80 dark:border-slate-700 p-3.5 text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed";
+
+        const expStrong = document.createElement("span");
+        expStrong.className = "font-bold text-amber-800 dark:text-amber-300 mr-1.5";
+        expStrong.textContent = "觀念解析：";
+
+        const expContent = document.createElement("span");
+        expContent.textContent = q.explanation;
+
+        expBox.appendChild(expStrong);
+        expBox.appendChild(expContent);
+        card.appendChild(expBox);
+      }
+
+      return card;
+    }
+
+    function renderSingleQuestion(questionId) {
+      const index = QUESTION_BANK.findIndex((item) => item.id === questionId);
+      if (index === -1) return;
+      const q = QUESTION_BANK[index];
+      const existing = document.getElementById(`q-card-${questionId}`);
+      if (existing) {
+        const fresh = buildQuestionCard(q, index);
+        existing.replaceWith(fresh);
+      }
+    }
+
+    function renderAll() {
+      const container = document.getElementById("quizContainer");
+      container.innerHTML = "";
+
+      const filteredItems = QUESTION_BANK.map((q, idx) => ({ q, idx })).filter(({ q }) => {
+        const chosen = state.answers[q.id];
+        if (state.filter === "unanswered") return chosen === undefined;
+        if (state.filter === "wrong") return chosen !== undefined && chosen !== q.correct;
+        return true;
+      });
+
+      if (filteredItems.length === 0) {
+        const empty = document.createElement("div");
+        empty.className =
+          "rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 text-center space-y-2";
+        empty.innerHTML = `
+          <p class="text-base font-bold text-slate-800 dark:text-slate-100">目前此篩選條件下沒有題目</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400">可以切換回「全部題目」，或點擊「重新測驗」展開新的一輪。</p>
+        `;
+        container.appendChild(empty);
+      } else {
+        filteredItems.forEach(({ q, idx }) => {
+          container.appendChild(buildQuestionCard(q, idx));
+        });
+      }
+
+      updateStats();
+    }
+
+    function updateFilterButtonsUI() {
+      document.querySelectorAll(".filter-btn").forEach((btn) => {
+        const isActive = btn.dataset.filter === state.filter;
+        btn.className = isActive
+          ? "filter-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-slate-900 text-white dark:bg-amber-500 dark:text-slate-950 cursor-pointer"
+          : "filter-btn px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 cursor-pointer";
+      });
+    }
+
+    // 綁定事件
+    document.getElementById("btnRetakeTop").addEventListener("click", () => retakeQuiz(null));
+    document.getElementById("btnRetakeBottom").addEventListener("click", () => retakeQuiz(null));
+    document.getElementById("btnRetakeSummary").addEventListener("click", () => retakeQuiz(null));
+    document.getElementById("btnShowSummary").addEventListener("click", () => showSummary(false));
+
+    document.getElementById("modeSelect").addEventListener("change", (e) => {
+      state.modeIndex = Number(e.target.value) || 0;
+      renderAll();
+    });
+
+    document.querySelectorAll(".filter-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.filter = btn.dataset.filter;
+        updateFilterButtonsUI();
+        renderAll();
+      });
+    });
+
+    document.getElementById("btnThemeToggle").addEventListener("click", () => {
+      document.documentElement.classList.toggle("dark");
+    });
+
+    // 初始化
+    prepareOptionsForRound();
+    renderAll();
+  </script>
+</body>
+</html>
+
+```
